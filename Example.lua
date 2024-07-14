@@ -19,6 +19,6 @@ UILib:CreateToggle(tab1, "toggle", function(state)
     end
 end)
 
-UILib:CreateSlider(tab1, 5, 0, 100, function(v)
-print(v)
+CreateNamedSlider(tab1, "Slider", 5, 0, 100, function(v)
+    print(v)
 end)
