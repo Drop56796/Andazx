@@ -91,18 +91,26 @@ function UILib:CreateButton(parent, buttonText, callback)
 end
 
 function UILib:CreateToggle(parent, toggleText, callback)
-    local toggle = Instance.new("TextButton")
-    toggle.Size = UDim2.new(0, 400, 0, 50)
+    local toggle = Instance.new("Frame")
+    toggle.Size = UDim2.new(0, 100, 0, 50)
     toggle.Position = UDim2.new(0, 0, 0, 140)
-    toggle.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    toggle.Text = toggleText
+    toggle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
     toggle.Parent = parent
+
+    local circle = Instance.new("Frame")
+    circle.Size = UDim2.new(0, 40, 0, 40)
+    circle.Position = UDim2.new(0, 5, 0, 5)
+    circle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    circle.Parent = toggle
+
     local isToggled = false
-    toggle.MouseButton1Click:Connect(function()
-        isToggled = not isToggled
-        toggle.Text = isToggled and "✔" or "✔"
-        toggle.BackgroundColor3 = isToggled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(0, 0, 0)
-        callback(isToggled)
+    toggle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            isToggled = not isToggled
+            circle.Position = isToggled and UDim2.new(1, -45, 0, 5) or UDim2.new(0, 5, 0, 5)
+            circle.BackgroundColor3 = isToggled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(100, 100, 100)
+            callback(isToggled)
+        end
     end)
     return toggle
 end
@@ -165,4 +173,3 @@ local function UILib:CreateSlider(parent, name, default, initial, max, callback)
     callback(default)
     return sliderContainer
 end
-
