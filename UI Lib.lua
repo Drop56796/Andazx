@@ -107,18 +107,39 @@ function UILib:CreateToggle(parent, toggleText, callback)
     return toggle
 end
 
-function UILib:CreateSlider(parent, default, initial, max, callback)
+local function UILib:CreateSlider(parent, name, default, initial, max, callback)
+    local sliderContainer = Instance.new("Frame")
+    sliderContainer.Size = UDim2.new(0, 400, 0, 70)
+    sliderContainer.Position = UDim2.new(0, 0, 0, 200)
+    sliderContainer.BackgroundTransparency = 1
+    sliderContainer.Parent = parent
+
+    local sliderLabel = Instance.new("TextLabel")
+    sliderLabel.Size = UDim2.new(1, 0, 0, 20)
+    sliderLabel.Position = UDim2.new(0, 0, 0, 0)
+    sliderLabel.BackgroundTransparency = 1
+    sliderLabel.Text = name
+    sliderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    sliderLabel.Parent = sliderContainer
+
     local slider = Instance.new("Frame")
-    slider.Size = UDim2.new(0, 400, 0, 50)
-    slider.Position = UDim2.new(0, 0, 0, 200)
+    slider.Size = UDim2.new(1, 0, 0, 50)
+    slider.Position = UDim2.new(0, 0, 0, 20)
     slider.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
-    slider.Parent = parent
+    slider.Parent = sliderContainer
+
+    local fill = Instance.new("Frame")
+    fill.Size = UDim2.new(initial / max, 0, 1, 0)
+    fill.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+    fill.Parent = slider
+
     local sliderButton = Instance.new("TextButton")
     sliderButton.Size = UDim2.new(0, 20, 0, 50)
     sliderButton.Position = UDim2.new(initial / max, 0, 0, 0)
     sliderButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
     sliderButton.Text = ""
     sliderButton.Parent = slider
+
     local dragging = false
     sliderButton.MouseButton1Down:Connect(function()
         dragging = true
@@ -134,11 +155,14 @@ function UILib:CreateSlider(parent, default, initial, max, callback)
             local relativeX = x - slider.AbsolutePosition.X
             local newPosition = math.clamp(relativeX, 0, slider.AbsoluteSize.X - sliderButton.AbsoluteSize.X)
             sliderButton.Position = UDim2.new(0, newPosition, 0, 0)
-            callback(newPosition / (slider.AbsoluteSize.X - sliderButton.AbsoluteSize.X) * max)
+            fill.Size = UDim2.new(newPosition / slider.AbsoluteSize.X, 0, 1, 0)
+            callback(newPosition / slider.AbsoluteSize.X * max)
         end
     end)
-    
+
     sliderButton.Position = UDim2.new(default / max, 0, 0, 0)
+    fill.Size = UDim2.new(default / max, 0, 1, 0)
     callback(default)
-    return slider
+    return sliderContainer
 end
+
